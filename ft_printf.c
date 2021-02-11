@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdarg.h>
+
 int width, prc, count;
+
 void	ft_putchar(char c)
 {
 	write(1, &c, 1);
