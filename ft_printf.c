@@ -3,12 +3,12 @@
 #include <unistd.h>
 #include <stdarg.h>
 int width, prc, count;
-char type;
 void	ft_putchar(char c)
 {
 	write(1, &c, 1);
 	count++;
 }
+
 char	*ft_atoi(char *s, int *rtn)
 {
 	while (*s >= '0' && *s <= '9')
@@ -18,6 +18,7 @@ char	*ft_atoi(char *s, int *rtn)
 	}
 	return s;
 }
+
 char	*get_type(char *s)
 {
 	width = 0;
@@ -31,6 +32,7 @@ char	*get_type(char *s)
 	}
 	return s;
 }
+
 int     length(unsigned int d, int base)
 {
 	int len = 1;
@@ -38,31 +40,23 @@ int     length(unsigned int d, int base)
         len++;
 	return len;
 }
-void	ft_putnbr_x(unsigned int nbr)
+
+void	ft_putnbr(unsigned int nbr, int base)
 {
 	if (nbr < 10)
 		ft_putchar(nbr + '0');
     else
     {
-        if (nbr < 16)
+        if (nbr < 16 && base == 16)
 		    ft_putchar(nbr + 'W');
         else
         {
-            ft_putnbr_x(nbr / 16);
-            ft_putnbr_x(nbr % 16);
+            ft_putnbr(nbr / base, base);
+            ft_putnbr(nbr % base, base);
         }
     }
 }
-void	ft_putnbr_d(unsigned int nbr)
-{
-	if (nbr < 10)
-		ft_putchar(nbr + '0');
-    else
-    {
-        ft_putnbr_d(nbr / 10);
-        ft_putnbr_d(nbr % 10);
-    }
-}
+
 void	print_d(va_list pa)
 {
 	int dd = va_arg(pa, int);
@@ -72,7 +66,6 @@ void	print_d(va_list pa)
 
 	d = dd > 0 ? dd : -dd;
 	len = length(d, 10);
-    // printf("|%d|\n", len); exit(0);
 	max = len > prc ? len : prc;
 	if (dd == 0 && prc == 0)
 		max = 0;
@@ -87,8 +80,9 @@ void	print_d(va_list pa)
 	while (++i < prc - len)
 		ft_putchar('0');
 	if (dd != 0 || prc != 0)
-		ft_putnbr_d(d);
+		ft_putnbr(d, 10);
 }
+
 void    print_x(va_list pa)
 {
     unsigned int x = va_arg(pa, unsigned int);
@@ -103,8 +97,9 @@ void    print_x(va_list pa)
     while (++i < prc - len)
         ft_putchar('0');
     if (x != 0 || prc != 0)
-        ft_putnbr_x(x);
+        ft_putnbr(x, 16);
 }
+
 void    print_s(va_list pa)
 {
     char *s = va_arg(pa, char*);
@@ -119,6 +114,7 @@ void    print_s(va_list pa)
     write(1, s, min);
     count += min;
 }
+
 int     ft_printf(const char *s, ...)
 {
 	count = 0;
@@ -141,7 +137,6 @@ int     ft_printf(const char *s, ...)
             if (*s != 's' && *s != 'd' && *s != 'x')
                 s--;
 		}
-        if (*s != 's' || *s != 'd' || *s != 'x')
 		s++;
 	}
     va_end(pa);
